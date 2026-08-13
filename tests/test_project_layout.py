@@ -26,3 +26,17 @@ def test_readme_links_to_three_simple_entries() -> None:
     readme = (PROJECT_ROOT / "README.md").read_text(encoding="utf-8")
     for name in ("安装.cmd", "测试.cmd", "卸载.cmd"):
         assert name in readme
+
+
+def test_credential_source_is_present_and_not_globally_ignored() -> None:
+    """避免凭据文件忽略规则误伤同名 Python 源码。"""
+
+    source = PROJECT_ROOT / "src" / "seu_autologin" / "credentials.py"
+    assert source.is_file()
+
+    rules = {
+        line.strip()
+        for line in (PROJECT_ROOT / ".gitignore").read_text(encoding="utf-8").splitlines()
+        if line.strip() and not line.lstrip().startswith("#")
+    }
+    assert "credentials.*" not in rules
