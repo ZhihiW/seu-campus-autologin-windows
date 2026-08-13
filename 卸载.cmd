@@ -4,7 +4,7 @@ set "SCRIPT_DIR=%~dp0"
 set "UNINSTALLER=%SCRIPT_DIR%installer\uninstall.ps1"
 if not exist "%UNINSTALLER%" set "UNINSTALLER=%LOCALAPPDATA%\SEUCampusAutoLoginOSS\uninstall.ps1"
 if not exist "%UNINSTALLER%" (
-  echo 未找到开源版卸载程序。
+  echo 未找到卸载程序。
   pause
   exit /b 2
 )

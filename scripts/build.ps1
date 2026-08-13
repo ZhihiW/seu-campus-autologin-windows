@@ -48,19 +48,17 @@ New-Item -ItemType Directory -Path (Join-Path $PackageDir "app") -Force | Out-Nu
 Copy-Item -Path (Join-Path $DistDir "SEUCampusAutoLoginOSS\*") -Destination (Join-Path $PackageDir "app") -Recurse -Force
 Copy-Item -LiteralPath (Join-Path $ProjectRoot "installer") -Destination (Join-Path $PackageDir "installer") -Recurse -Force
 foreach ($Name in @(
-    "安装公开版.cmd",
-    "配置公开版.cmd",
-    "手动检查.cmd",
-    "立即运行一次.cmd",
-    "卸载公开版.cmd",
+    "安装.cmd",
+    "测试.cmd",
+    "卸载.cmd",
     "README.md",
-    "LICENSE",
-    "SECURITY.md",
-    "PRIVACY.md",
-    "THIRD_PARTY_NOTICES.md"
+    "LICENSE"
 )) {
     Copy-Item -LiteralPath (Join-Path $ProjectRoot $Name) -Destination (Join-Path $PackageDir $Name) -Force
 }
+Copy-Item -LiteralPath (Join-Path $ProjectRoot ".github\SECURITY.md") -Destination (Join-Path $PackageDir "SECURITY.md") -Force
+Copy-Item -LiteralPath (Join-Path $ProjectRoot "docs\PRIVACY.md") -Destination (Join-Path $PackageDir "PRIVACY.md") -Force
+Copy-Item -LiteralPath (Join-Path $ProjectRoot "docs\THIRD_PARTY_NOTICES.md") -Destination (Join-Path $PackageDir "THIRD_PARTY_NOTICES.md") -Force
 
 $ZipPath = Join-Path $ReleaseDir "$PackageName.zip"
 Compress-Archive -LiteralPath $PackageDir -DestinationPath $ZipPath -CompressionLevel Optimal
