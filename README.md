@@ -2,7 +2,7 @@
 
 适用于 Windows 10/11 的东南大学校园网自动登录工具。
 
-[![Download Latest Release](https://img.shields.io/badge/Download-Latest%20Release-2ea44f?style=for-the-badge&logo=github)](https://github.com/ZhihiW/seu-campus-autologin-windows/releases)
+
 
 > [!IMPORTANT]
 > 仅支持登录页为 `http://10.9.10.100/` 的网络环境。
@@ -13,6 +13,7 @@
 ## 使用方法
 
 1. 从 Releases 下载并解压 Windows ZIP；
+ [![Download Latest Release](https://img.shields.io/badge/Download-Latest%20Release-2ea44f?style=for-the-badge&logo=github)](https://github.com/ZhihiW/seu-campus-autologin-windows/releases)
 2. 双击 `安装.cmd`，在本机窗口输入账号和密码；
 3. 安装完成后，程序会在每次登录 Windows 时自动检查校园网。
 
