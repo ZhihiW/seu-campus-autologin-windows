@@ -1,0 +1,50 @@
+name: Build Windows release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 配置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: 安装构建依赖
+        run: python -m pip install -e ".[dev]"
+
+      - name: 构建发布包
+        shell: powershell
+        run: .\scripts\build.ps1 -PythonExe python
+
+      - name: 检查打包程序
+        shell: powershell
+        run: .\dist\SEUCampusAutoLoginOSS\SEUCampusAutoLoginOSS.exe --version
+
+      - name: 上传工作流产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-release
+          path: |
+            release/*.zip
+            release/*.sha256
+
+      - name: 创建 GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: powershell
+        run: gh release create "${{ github.ref_name }}" release/*.zip release/*.sha256 --generate-notes
