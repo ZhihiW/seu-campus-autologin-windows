@@ -1,0 +1,23 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+build/
+dist/
+release/
+*.spec.local
+*.log
+.runtime/
+.idea/
+.vscode/
+Thumbs.db
+.DS_Store
+
+# 任何本地凭据、诊断报告和打包产物都不得提交。
+credentials.*
+diagnostics/
+SHA256SUMS.local
