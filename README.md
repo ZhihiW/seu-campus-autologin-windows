@@ -2,6 +2,7 @@
 
 适用于 Windows 10/11 的东南大学校园网自动登录工具。
 
+[![Download Latest Release](https://img.shields.io/badge/Download-Latest%20Release-2ea44f?style=for-the-badge&logo=github)](https://github.com/ZhihiW/seu-campus-autologin-windows/releases)
 
 > [!IMPORTANT]
 > 仅支持登录页为 `http://10.9.10.100/` 的网络环境。
