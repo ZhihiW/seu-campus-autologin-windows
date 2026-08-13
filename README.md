@@ -2,7 +2,6 @@
 
 适用于 Windows 10/11 的东南大学校园网自动登录工具。
 
-登录 Windows 后，程序会先检查网络；只有确认外网不可用且固定认证网关可达时，才读取本机凭据并尝试认证。
 
 > [!IMPORTANT]
 > 仅支持登录页为 `http://10.9.10.100/` 的网络环境。
@@ -49,6 +48,5 @@
 - [参与贡献](.github/CONTRIBUTING.md)
 - [更新记录](docs/CHANGELOG.md)
 
-相关项目：[NN708/seu-wlan-login](https://github.com/NN708/seu-wlan-login)
 
 项目采用 [MIT License](LICENSE)，第三方组件见 [说明](docs/THIRD_PARTY_NOTICES.md)。
