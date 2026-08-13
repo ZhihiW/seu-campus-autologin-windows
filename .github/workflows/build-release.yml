@@ -47,4 +47,16 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         shell: powershell
-        run: gh release create "${{ github.ref_name }}" release/*.zip release/*.sha256 --generate-notes
+        run: |
+          $TagName = "${{ github.ref_name }}"
+          $Assets = Get-ChildItem -LiteralPath release -File |
+            Where-Object { $_.Extension -in @(".zip", ".sha256") } |
+            ForEach-Object { $_.FullName }
+          if ($Assets.Count -ne 2) {
+            throw "预期得到 ZIP 和 SHA256 两个发布文件，实际为 $($Assets.Count) 个。"
+          }
+          $ReleaseArguments = @("release", "create", $TagName) + $Assets + @("--generate-notes")
+          if ($TagName.Contains("-")) {
+            $ReleaseArguments += "--prerelease"
+          }
+          & gh @ReleaseArguments
