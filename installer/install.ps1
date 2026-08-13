@@ -13,6 +13,7 @@ $SourceExe = Join-Path $SourceAppDir "SEUCampusAutoLoginOSS.exe"
 $InstallDir = Join-Path $env:LOCALAPPDATA $AppName
 $InstallAppDir = Join-Path $InstallDir "app"
 $InstalledExe = Join-Path $InstallAppDir "SEUCampusAutoLoginOSS.exe"
+$PowerShellExe = Join-Path $PSHOME "powershell.exe"
 $StartupLink = Join-Path ([Environment]::GetFolderPath("Startup")) "SEU Campus Auto Login OSS.lnk"
 $StartMenuDir = Join-Path ([Environment]::GetFolderPath("Programs")) "SEU Campus Auto Login OSS"
 
@@ -29,12 +30,6 @@ Copy-Item -Path (Join-Path $SourceAppDir "*") -Destination $InstallAppDir -Recur
 
 New-Item -ItemType Directory -Path $InstallDir -Force | Out-Null
 Copy-Item -LiteralPath (Join-Path $SourceDir "uninstall.ps1") -Destination (Join-Path $InstallDir "uninstall.ps1") -Force
-foreach ($Name in @("配置公开版.cmd", "手动检查.cmd", "立即运行一次.cmd", "卸载公开版.cmd")) {
-    $SourceFile = Join-Path $PackageRoot $Name
-    if (Test-Path -LiteralPath $SourceFile) {
-        Copy-Item -LiteralPath $SourceFile -Destination (Join-Path $InstallDir $Name) -Force
-    }
-}
 
 & $InstalledExe configure
 if ($LASTEXITCODE -ne 0) {
@@ -79,27 +74,29 @@ catch {
 
 New-Item -ItemType Directory -Path $StartMenuDir -Force | Out-Null
 $Shell = New-Object -ComObject WScript.Shell
-$Shortcuts = @{
-    "配置凭据.lnk" = "配置公开版.cmd"
-    "手动检查.lnk" = "手动检查.cmd"
-    "立即运行一次.lnk" = "立即运行一次.cmd"
-    "卸载.lnk" = "卸载公开版.cmd"
-}
-foreach ($Pair in $Shortcuts.GetEnumerator()) {
-    $Target = Join-Path $InstallDir $Pair.Value
-    if (Test-Path -LiteralPath $Target) {
-        $Shortcut = $Shell.CreateShortcut((Join-Path $StartMenuDir $Pair.Key))
-        $Shortcut.TargetPath = $Target
-        $Shortcut.WorkingDirectory = $InstallDir
-        $Shortcut.Save()
+$Commands = @(
+    @{ Name = "配置凭据.lnk"; Target = $InstalledExe; Arguments = "configure" },
+    @{ Name = "检查状态.lnk"; Target = $InstalledExe; Arguments = "check" },
+    @{ Name = "立即运行一次.lnk"; Target = $InstalledExe; Arguments = "run-once --initial-delay 0" },
+    @{
+        Name = "卸载.lnk"
+        Target = $PowerShellExe
+        Arguments = "-NoLogo -NoProfile -ExecutionPolicy Bypass -File `"$(Join-Path $InstallDir 'uninstall.ps1')`""
     }
+)
+foreach ($Command in $Commands) {
+    $Shortcut = $Shell.CreateShortcut((Join-Path $StartMenuDir $Command.Name))
+    $Shortcut.TargetPath = $Command.Target
+    $Shortcut.Arguments = $Command.Arguments
+    $Shortcut.WorkingDirectory = $InstallDir
+    $Shortcut.Save()
 }
 
 if (-not $SkipCurrentTest) {
     Write-Host "正在进行不会断网、不会重启的当前状态测试……" -ForegroundColor Cyan
     & $InstalledExe run-once --initial-delay 0 --network-wait-seconds 0 --no-browser-fallback
     if ($LASTEXITCODE -ne 0) {
-        Write-Warning "当前状态测试未通过；安装仍已完成，请运行“手动检查”。"
+        Write-Warning "当前状态测试未通过；安装仍已完成，请从开始菜单运行“检查状态”。"
     }
 }
 
